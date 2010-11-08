@@ -1,0 +1,102 @@
+% The roulette table pays nobody except him that 
+% keeps it. Nevertheless a passion for gaming is 
+% common, though a passion for keeping roulette 
+% tables is unknown.
+% - George Bernard Shaw
+
+% %%
+% Created 31 Oct 2010
+% Last updated 7 Nov 2010
+% Submitted (Not yet)
+% tn248@cam.ac.uk
+% %%
+
+% NOT FIT FOR SUBMISSION - DELETE ME WHEN DONE
+
+\documentclass[10pt, oneside, reqno]{article}
+\usepackage{amssymb, amsthm, amsmath, amsfonts}
+\usepackage{fullpage}
+\usepackage[tableposition=top]{caption}
+\usepackage{ifthen}
+\usepackage{listings}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+
+\setlength{\textheight}{9truein}
+\setlength{\topmargin}{-.5truein}
+\setlength{\headheight}{0truein}
+\setlength{\headsep}{0truein}
+
+%\hwinfo{Thomson Nguyen}{Course}{01/01/2010}{Snazzy title}
+\newcommand{\hwinfo}[4]{\hfill\hfill #1 \par
+\hfill\hfill #2 \par
+\hfill\hfill #3 \par
+\par\bigskip
+\begin{center}
+\large	#4
+\end{center}
+}
+
+\newcommand{\ans}[1]{\begin{proof}[{\bf #1}]}
+\newcommand{\eans}{\end{proof}}
+\theoremstyle{plain}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Euler for math | Palatino for rm | Helvetica for ss | Courier for tt
+\renewcommand{\rmdefault}{ppl} % rm
+\linespread{1.05}  % Palatino needs more leading
+\usepackage[scaled]{helvet} % ss
+\usepackage{courier} % tt
+\usepackage{eulervm} 
+
+\lstloadlanguages{R}
+\lstdefinelanguage{Renhanced}[]{R}{%
+  morekeywords={acf,ar,arima,arima.sim,colMeans,colSums,is.na,is.null,%
+   
+Jl^k_5z8|}E6cmt
+
+mapply,ms,na.rm,nlmin,replicate,row.names,rowMeans,rowSums,seasonal,%
+    sys.time,system.time,ts.plot,which.max,which.min},
+  deletekeywords={c},
+  alsoletter={.\%},%
+  alsoother={:_\$}}
+\lstset{language=Renhanced,extendedchars=true,
+  basicstyle=\small\ttfamily,
+  commentstyle=\textsl,
+  keywordstyle=\mdseries,
+ showstringspaces=false,
+  index=[1][keywords], 
+  indexstyle=\indexfonction}
+
+\newcommand{\indexfonction}[1]{\index{#1@\texttt{#1}}}
+
+\newenvironment{enumalph}{\begin{enumerate}\renewcommand{\labelenumi}{\textnormal{(\alph{enumi})}}}{\end{enumerate}}
+
+\SweaveOpts{keep.source=TRUE} % I like comments
+
+\begin{document}
+\normalfont
+\setkeys{Gin}{width=3.5in} % How big do we want our R figures?
+
+\hwinfo{Thomson Nguyen (tn248)}{Scientific Programming (SP)}{\today}{Scientific Programming\\Assignment 2}
+
+\tableofcontents
+
+\section{Roulette (20)}
+\ans{Answer}
+We have a single-zero roulette wheel: 18 red numbers, 18 black numbers, one green zero. Along with this roulette wheel, we have four various betting systems:
+
+\begin{enumalph}
+	\item Betting \$1 on red. House pays 1:1.
+	\item Betting \$1 on one number. House pays 35:1.
+	\item Betting \$1 on red, doubling our bet after each loss. Bet resets to \$1 after a win, and betting stops after winning \$10, or when the bet exceeds \$100.
+	\item Starting with the ordered list $(1,2,3,4)$, we bet the sum of the first and last numbers on red. On a win, the first and last numbers are deleted; on a loss, the sum is added to the end of the list. This process is repeated until the list is empty, or until the bet exceeds \$100. 
+\end{enumalph}
+
+<<alwaysbetonred>>
+
+\eans
+\end{document}

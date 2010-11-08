@@ -1,0 +1,6 @@
+\contentsline {section}{\numberline {1}Examination grading (10)}{1}
+\contentsline {section}{\numberline {2}A game of squash (20)}{3}
+\contentsline {section}{\numberline {3}Population Dynamics (20)}{6}
+\contentsline {section}{\numberline {4}Appendix: \texttt {spa1\_q1\_tn248.R}}{9}
+\contentsline {section}{\numberline {5}Appendix: \texttt {spa1\_q2\_tn248.R}}{11}
+\contentsline {section}{\numberline {6}Appendix: \texttt {spa1\_q3\_tn248.R}}{14}

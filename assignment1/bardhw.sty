@@ -1,0 +1,332 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  This is BARDHW.STY
+%%  
+%%  This style file is designed for homework problems.
+%%
+%%  This combines good amounts of svsing2e.sty 
+%% (Springer-Verlag) and Ragsmac.sty (from Bob McGrail), 
+%%  as well as theorem formatting from macrolp.sty (by 
+%%  Ethan Bloch), and some extras from Amy Hendrickson
+%%  designed for Proofs \& Fundamentals.
+%%  
+%% Read the manual bardhw_man.tex or bardhw_man.pdf 
+%% for more details regarding the Bard Homework Style.
+%%
+%% The manual for this style file, and a template for homeworks
+%% can be found at http://math.bard.edu/bloch/bardtex.htm
+%%
+%% For additional help, or for suggestions or corrections
+%% contact Ethan Bloch at bloch@bard.edu
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\catcode`\^^Z 10
+%
+% Stuff from svsing2e.sty
+% Copyright (C) 1988, 1994 Springer-Verlag, Inc.
+%
+%get rid of ae's
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Homework information
+
+%%Format: \hwinfo{Ethan Bloch}{Math 888}{5/5/55}
+
+\newcommand{\hwinfo}[3]{\hfill\hfill #1 \par
+\hfill\hfill #2 \par
+\hfill\hfill #3 \par
+\par\bigskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Margin Stuff
+
+%\setlength{\oddsidemargin}{0truein}
+%%gives a 1-inch left margin.
+%\setlength{\evensidemargin}{0truein} 
+%%gives a 1-inch left margin.
+
+%\setlength{\textwidth}{6.5truein}
+%%allows 6.5 inches of text 
+%%between the left and right margins.
+
+%\setlength{\textheight}{8.8truein}
+
+%\setlength{\topmargin}{0truein}
+%\setlength{\headheight}{0.1truein}
+%\setlength{\headsep}{0.1truein}
+
+
+\tolerance=1600
+
+%%Ethan added the following.
+
+\newcommand{\spce}{\smallskip}
+
+\newcommand{\rrr}[1]{{\mathbb{R}}^{#1}}
+\newcommand{\rr}{\mathbb{R}}
+\newcommand{\cc}{\mathbb{C}}
+\newcommand{\zz}{\mathbb{Z}}
+\newcommand{\zp}{{\zz}^+}
+\newcommand{\qq}{\mathbb{Q}}
+\newcommand{\nn}{\mathbb{N}}
+\newcommand{\func}[3]{{#1} \colon {#2} \to {#3}}
+\newcommand{\eqmod}[3]{{#1} \equiv {#2} \pmod {#3}}
+\newcommand{\neqmod}[3]{{#1} \not\equiv {#2} \pmod {#3}}
+\newcommand{\relclass}[1]{\lbrack {#1} \rbrack}
+\newcommand{\zs}[1]{{\zz}_{{#1}}}
+\newcommand{\rc}{\mathrel{\circ}}
+
+\newcommand{\numm}{4}
+\newcommand{\numms}{4}
+\newcommand{\boxxad}[1]{ \begin{center}\fbox{\begin{minipage}
+{4.9truein}\vskip \numm pt #1 \vskip \numms pt \end{minipage}}\end{center}}
+\newcommand{\boxd}[1]{ \begin{center}\framebox[5.7truein]{\begin{minipage}
+{5.5truein}\vskip 4pt #1 \vskip 3pt \end{minipage}}\end{center}}
+
+%\def\qex{\pushright{$\lozenge$}\penalty-700 \smallskip}
+%\def\qef{\pushright{$\triangle$}\penalty-700 \smallskip}
+%\def\qen{\pushright{$\wr\wr\wr$}\penalty-700 \smallskip}
+
+\providecommand{\qexsymbol}{$\lozenge$}%
+\newcommand{\mathqex}{\quad\hbox{\qexsymbol}}
+\DeclareRobustCommand{\qex}{%
+  \ifmmode \mathqex
+  \else
+    \leavevmode\unskip\penalty9999 \hbox{}\nobreak\hfill
+    \quad\hbox{\qexsymbol}%
+  \fi
+}
+\providecommand{\qefsymbol}{$\triangle$}%
+\newcommand{\mathqef}{\quad\hbox{\qefsymbol}}
+\DeclareRobustCommand{\qef}{%
+  \ifmmode \mathqef
+  \else
+    \leavevmode\unskip\penalty9999 \hbox{}\nobreak\hfill
+    \quad\hbox{\qefsymbol}%
+  \fi
+}
+\providecommand{\qensymbol}{$///$}%
+\newcommand{\mathqen}{\quad\hbox{\qensymbol}}
+\DeclareRobustCommand{\qen}{%
+  \ifmmode \mathqen
+  \else
+    \leavevmode\unskip\penalty9999 \hbox{}\nobreak\hfill
+    \quad\hbox{\qensymbol}%
+  \fi
+}
+
+%%\newenvironment{demonstration}{\par\medskip
+%%\noindent{Proof\,:}\ }{\par\medskip}
+%%\newenvironment{demonstration}{\par\medskip
+%%\noindent{{\bf Proof}\,:}\ }{\par\medskip}
+
+%%\newcommand{\demo}{\begin{demonstration}}
+%%\newcommand{\edemo}{\qed\end{demonstration}}
+%%\newcommand{\demoname}[1]{\begin{nondemonstration}{#1}}
+%%\newcommand{\edemoname}{\qed\end{nondemonstration}}
+%%\newenvironment{nondemonstration}[1]{\par\medskip
+%%\noindent{{\bf #1}\,:}\ }{\par\medskip}
+%%\newcommand{\nondemo}[1]{\begin{nondemonstration}{#1}}
+%%\newcommand{\enondemo}{\qen\end{nondemonstration}}
+
+%%These use amsthm.sty
+\newcommand{\demo}{\begin{proof}[{\bf Proof}]}
+\newcommand{\edemo}{\end{proof}}
+\newcommand{\sol}{\begin{proof}[{\bf Solution}]}
+\newcommand{\esol}{\end{proof}}
+\newcommand{\demonum}[1]{\begin{proof}[{\bf Proof of #1}]}
+\newcommand{\edemonum}{\end{proof}}
+\newcommand{\solnum}[1]{\begin{proof}[{\bf Solution of #1}]}
+\newcommand{\esolnum}{\end{proof}}
+\newcommand{\ans}[1]{\begin{proof}[{\bf #1}]}
+\newcommand{\eans}{\end{proof}}
+
+\newcommand{\equa}[1]{\begin{equation}\label{#1}}
+\newcommand{\eequa}{\end{equation}}
+
+\theoremstyle{plain}
+%\newtheorem*{exercise}{Exercise}
+%\newtheorem*{problem}{Problem}
+%\newtheorem*{lemma}{Lemma}
+%\newtheorem*{theorem}{Theorem}
+%\newtheorem*{proposition}{Proposition}
+%\newtheorem*{conjecture}{Conjecture}
+
+\newtheorem*{exercise}{\exhd}
+\newcommand{\exhd}{FRED}
+\newcommand{\exer}[1]{\renewcommand{\exhd}{Exercise #1}\begin{exercise}}
+\newcommand{\eexer}{\end{exercise}}
+
+\newtheorem*{problem}{\probhd}
+\newcommand{\probhd}{FRED}
+\newcommand{\prob}[1]{\renewcommand{\probhd}{Problem #1}\begin{problem}}
+\newcommand{\eprob}{\end{problem}}
+
+\newtheorem*{lemma}{\lemhd}
+\newcommand{\lemhd}{FRED}
+\newcommand{\lem}[1]{\renewcommand{\lemhd}{Lemma #1}\begin{lemma}}
+\newcommand{\elem}{\end{lemma}}
+
+\newtheorem*{theorem}{\thmhd}
+\newcommand{\thmhd}{FRED}
+\newcommand{\thm}[1]{\renewcommand{\thmhd}{Theorem #1}\begin{theorem}}
+\newcommand{\ethm}{\end{theorem}}
+
+\newtheorem*{proposition}{\prophd}
+\newcommand{\prophd}{FRED}
+\newcommand{\prop}[1]{\renewcommand{\prophd}{Proposition #1}\begin{proposition}}
+\newcommand{\eprop}{\end{proposition}}
+
+\newtheorem*{conjecture}{\conjhd}
+\newcommand{\conjhd}{FRED}
+\newcommand{\conj}[1]{\renewcommand{\conjhd}{Conjecture #1}\begin{conjecture}}
+\newcommand{\econj}{\end{conjecture}}
+
+\newtheorem*{exercisenum}{\exnumhd}
+\newcommand{\exnumhd}{FRED}
+\newcommand{\exernum}[1]{\renewcommand{\exnumhd}{#1}
+\begin{exercisenum}}
+\newcommand{\eexernum}{\end{exercisenum}}
+
+%\newcommand{\thm}{\begin{theorem}}
+%\newcommand{\ethm}{\end{theorem}}
+%\newcommand{\prop}{\begin{proposition}}
+%\newcommand{\eprop}{\end{proposition}}
+%\newcommand{\lem}{\begin{lemma}}
+%\newcommand{\elem}{\end{lemma}}
+%\newcommand{\conj}{\begin{conjecture}}
+%\newcommand{\econj}{\end{conjecture}}
+
+\theoremstyle{definition}
+%\newtheorem*{definition}{Definition}
+%\newtheorem*{example}{Example}
+%\newtheorem*{remark}{Remark}
+%\newtheorem*{algorithm}{Algorithm}
+
+\newtheorem*{definition}{\defnhd}
+\newcommand{\defnhd}{FRED}
+\newcommand{\defn}[1]{\renewcommand{\defnhd}{Definition #1}\begin{definition}}
+\newcommand{\edefn}{\end{definition}}
+
+\newtheorem*{example}{\explhd}
+\newcommand{\explhd}{FRED}
+\newcommand{\expl}[1]{\renewcommand{\explhd}{Example #1}\begin{example}}
+\newcommand{\eexpl}{\end{example}}
+
+\newtheorem*{remark}{\remkhd}
+\newcommand{\remkhd}{FRED}
+\newcommand{\remk}[1]{\renewcommand{\remkhd}{Remark #1}\begin{remark}}
+\newcommand{\eremk}{\end{remark}}
+
+\newtheorem*{algorithm}{\alghd}
+\newcommand{\alghd}{FRED}
+\newcommand{\alg}[1]{\renewcommand{\alghd}{Algorithm #1}\begin{algorithm}}
+\newcommand{\ealg}{\end{algorithm}}
+
+%\newcommand{\expl}{\begin{example}}
+%\newcommand{\eexpl}{\qex\end{example}}
+%\newcommand{\remk}{\begin{remark}}
+%\newcommand{\eremk}{\qex\end{remark}}
+%\newcommand{\alg}{\begin{algorithm}}
+%\newcommand{\ealg}{\qex\end{algorithm}}
+%\newcommand{\defn}{\begin{definition}}
+%\newcommand{\edefn}{\qef\end{definition}}
+
+%\newcommand{\exernum}{\begin{exercisenum}}
+%\newcommand{\eexernum}{\end{exercisenum}}
+%\newcommand{\exer}[1]{\begin{exercise}[#1]}
+%\newcommand{\eexer}{\end{exercise}}
+%\newcommand{\prob}{\begin{problem}}
+%\newcommand{\eprob}{\end{problem}}
+
+%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\doublespace}{\setlength{\baselineskip}{24pt}}
+\newcommand{\singlespace}{\setlength{\baselineskip}{12pt}}
+
+%%%%%%%%%%%%%%%%%%%%%
+
+%%For use with BMP files.
+%%Label (also figure name), width, height
+%%Requires \input setbmp
+\newcommand{\figbmp}[5]
+{\begin{figure}[ht]
+\centerbmp{#3}{#4}{#1}
+\caption{#5}\label{#2}
+\end{figure}}
+
+%%For use with JPEG files.  Must use PS mode.
+%%Label (also figure name), width, height
+%%Requires \input setbmp
+\newcommand{\figjpg}[5]
+{\begin{figure}[ht]
+\centerbmp{#3}{#4}{#1}
+\caption{#5}\label{#2}
+\end{figure}}
+
+%%For use with EPS files.  Must use PS mode.
+%%Requires \usepackage{graphics}
+\newcommand{\figeps}[3]
+{\vskip\figskip
+\begin{figure}[ht]
+\hfil\includegraphics{#1}\hfil
+\caption{#3}\label{#2}
+\end{figure}}
+
+\newcommand{\figspace}[2]{
+\begin{figure}[ht]
+\begin{center}
+\vskip #1
+\end{center}
+\caption{\label{#2}}
+\end{figure}
+}
+
+
+%\long\def\@makecaption#1{{
+%   \vskip 6pt
+%   \small
+%   \setbox\@tempboxa\hbox{#1}
+%   \ifdim \wd\@tempboxa >\hsize   % IF longer than one line:
+%      \unhbox\@tempboxa\hfil\par      %  THEN set as ordinary
+%paragraph.
+%     \else                        %   ELSE  center.
+%       \hbox to\hsize{\hfil\box\@tempboxa\hfil}
+%   \fi}}
+%%Here
+%\def\fnum@figure{\small\curfonts Figure \thefigure}
+%{\sc FIGURE~}\thefigure}
+
+
+\makeatletter
+
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip
+  \sbox\@tempboxa{#1 \ \  #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    #1 \ \  #2\par
+  \else
+    \global \@minipagefalse
+    \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+
+\makeatother
+
+%\renewcommand{\thefigure}{\@arabic\c@figure}
+%\@addtoreset{figure}{section}
+
+
+%\def\thmhead@plain#1#2#3{%
+%  \thmname{#1}\thmnumber{\@ifnotempty{#1}{ }\@upn{#2}}%
+%  \thmnote{ {\the\thm@notefont #3}}}
+%\let\thmhead\thmhead@plain
+%\def\swappedhead#1#2#3{%
+%  \thmnumber{#2}%
+%  \thmname{\@ifnotempty{#2}{~}#1}%
+%  \thmnote{ {\the\thm@notefont #3}}}

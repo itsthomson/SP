@@ -1,0 +1,765 @@
+% On two occasions I have been asked, – "Pray, Mr. Babbage, if you put 
+% into the machine wrong figures, will the right answers come out?" In 
+% one case a member of the Upper, and in the other a member of the Lower
+% House put this question. I am not able rightly to apprehend the kind
+% of confusion of ideas that could provoke such a question.
+% - Charles Babbage, Passages from the Life of a Philosopher (1864)
+% (Ch. 5: "Difference Engine No. 1")
+
+% (tn248)
+% Created 7 Oct 2010
+% At section 10 on 10 Oct 2010
+
+% Because I keep forgetting: 
+% In a terminal: R CMD Sweave filename.RnW
+% In R: Sweave()
+
+\documentclass[11pt, oneside, reqno]{article}
+\usepackage{amssymb, amsthm, amsmath, amsfonts}
+
+\usepackage{bardhw}
+\usepackage{fullpage}
+\usepackage[tableposition=top]{caption}
+\usepackage{ifthen}
+		\usepackage{url}
+
+% Euler for math | Palatino for rm | Helvetica for ss | Courier for tt
+\renewcommand{\rmdefault}{ppl} % rm
+\linespread{1.05}        % Palatino needs more leading
+\usepackage[scaled]{helvet} % ss
+\usepackage{courier} % tt
+%\usepackage{euler} % math
+\usepackage{eulervm} % a better implementation of the euler package (not in gwTeX)
+\normalfont
+\usepackage[T1]{fontenc}
+
+\usepackage[utf8]{inputenc}
+
+
+\begin{document}
+	\setlength{\parindent}{0cm}
+\normalfont
+\setkeys{Gin}{width=3.5in}
+\title{Scientific Programming Lab Exercises}
+\date{}
+%\author{Thomson Nguyen (tn248)}
+\maketitle
+
+\hwinfo{Thomson Nguyen (tn248)}{Scientific Programming (SP)}{\today}
+\tableofcontents
+\section{Interactive Calculations}
+
+\ans{Exercise 1.1}
+These variable names \itshape{can't} be used:
+\begin{itemize}
+\item \verb@cell maximum size@ has spaces. Variables cannot contain blank spaces.
+
+\item \verb@4min@ starts with a number. All variables must start with letters.
+
+\item \verb@site#7@ contains a \#. All variables should contain alphanumeric characters.
+\end{itemize}
+\eans
+
+\ans{Exercise 1.2}
+The following values were computed in R:
+
+\begin{enumerate}
+\item  
+<<1.2.1.1>>=
+2^7/(2^7-1)
+@
+
+<<1.2.1.2>>=
+(1-(1/2^7))^(-1)
+@
+
+\item
+<<1.2.2.1>>=
+sin(pi/9)
+
+<<1.2.2.2>>=
+cos(pi/7)^2
+@
+
+\item
+<<1.2.3.1>>=
+(2^7)/(2^7-1)+4*sin(pi/9)
+@
+\end{enumerate}
+\eans
+
+\ans{Exercise 1.3}
+Apropos looks at the name of the function only, whilst help.search will find all instances of the string in its help pages.
+
+\eans
+
+\ans{Exercise 1.4}
+Here is a histogram of 5000 random numbers with a Normal distribution:
+
+<<label=randomhistogram>>=
+y=rnorm(5000)
+hist(y,breaks=20)
+@
+
+\begin{figure}
+\begin{center}
+<<label=fig1,fig=TRUE,echo=FALSE>>=
+<<randomhistogram>>
+@
+\end{center}
+\caption{Histogram of 5000 random Normally distributed numbers.}
+\label{fig:one}
+\end{figure}
+
+Setting the number of breaks in \verb@hist@ only suggests the number of bins. If you want a specific number of bins, you will have to create a vector with the bins specified (call it \verb@bins@)--then you would write:
+
+<<>>=
+bins=seq(-5,5, by=.5)
+hist(y,breaks=bins)
+@
+\eans
+
+\section{An interactive section: fitting a linear regression model}
+
+There were no exercises to answer in this section, but the example was fun.
+
+\section{Script files and data files}
+
+\ans{Exercise 3.1}
+We were supposed to create a copy of \verb@Intro2.R@, and modify the copy so that the script performs linear regression of algal growth rate on the log of light intensity, and plots. This file is called \verb@Intro2Log.R@, and looks like this:
+
+<<Intro2Log>>=
+X=read.table('ChlorellaGrowth.txt'); 
+X=as.matrix(X); 
+Light=X[,1]; rmax=X[,2]; 
+LogLight<- log(Light)
+
+par(cex=1.5,cex.main=0.9);
+xlabel="Light intensity (uE/m2/s)"
+xlabelLog="Log Light intensity (uE/m2/s)"
+ylabel="Maximum growth rate rmax (1/d)"
+plot(LogLight,rmax,xlab=xlabel, ylab=ylabel,pch=16); 
+
+# xlab and ylab are x and y axis labels, pch is "plotting character"
+# cex is 'character expansion' - cex=1.5 increases symbol & label sizes by 50%
+# cex.main sets the character expansion for the main title of the plot 
+
+title(main="Data from Fussmann et al. (2000) system");
+fitLog=lm(rmax~LogLight);
+abline(fitLog)
+
+# Next we get the regression equation to 'display itself' on the graph
+c1Log=round(fitLog$coef[1],digits=3); 	
+c2Log=round(fitLog$coef[2],digits=3); 
+text(3.8,3,paste("rmax=",c1Log,"+",c2Log,"Log Light")); 
+
+# Use ?round, ?text and ?paste to read about these commands
+# for working with plots  
+@
+
+This produces the following plot:
+
+\begin{figure}
+\begin{center}
+<<label=fig2,fig=TRUE,echo=FALSE>>=
+<<Intro2Log>>
+@
+\end{center}
+\caption{Regression Analysis of Log(Light).}
+\label{fig:two}
+\end{figure}
+\eans
+
+\ans{Exercise 3.2}
+From the text: \emph{R produced a series of diagnostic plots exploring whether or not the fitter linear model is a suitable fit to the data. In each of the plots, the 3 most extreme points (the most likely candidates for "outliers") have been identified according to their sequence in the data set.}
+\eans
+
+\ans{Exercise 3.3}
+The command to do so is:
+
+<<LightAxes>>=
+plot(Light,rmax,xlab=xlabel, ylab=ylabel,pch=16,xlim=c(0,120),ylim=c(1,4)); 
+fit=lm(rmax~Light);
+c1=round(fit$coef[1],digits=3); 	
+c2=round(fit$coef[2],digits=3); 
+abline(fit)
+text(40,3,paste("rmax=",c1,"+",c2,"Log Light"));
+@
+
+and it will generate a plot that looks like this:
+
+\begin{figure}
+\begin{center}
+<<label=fig3,fig=TRUE,echo=FALSE>>=
+<<LightAxes>>
+@
+\end{center}
+\caption{Regression Analysis of Light with updated axes.}
+\label{fig:three}
+\end{figure}
+\eans
+
+\ans{Exercise 3.4}
+The following code block will plot both the linear and $\log$ plots as a single figure, in one column:
+
+<<LightOneColumn>>=
+par(mfcol=c(2,1))
+plot(Light,rmax,xlab=xlabel, ylab=ylabel,pch=16,xlim=c(0,120),ylim=c(1,4)); 
+fit=lm(rmax~Light);
+abline(fit)
+text(40,3,paste("rmax=",c1,"+",c2,"Light"));
+
+plot(LogLight,rmax,xlab=xlabelLog, ylab=ylabel,pch=16); 
+fit=lm(rmax~Light);
+abline(fitLog)
+text(3.8,3,paste("rmax=",c1,"+",c2,"Log Light"));
+@
+
+\begin{figure}
+\begin{center}
+<<label=LightOneColumn,fig=TRUE,echo=FALSE>>=
+<<LightOneColumn>>
+@
+\end{center}
+\caption{Regression Analysis of Light and $\log$ Light on one column.}
+\label{fig:LightOneColumn}
+\end{figure}
+
+And the following code block will do the same thing, except in one row:
+
+<<LightOneRow>>=
+par(mfcol=c(1,2))
+plot(Light,rmax,xlab=xlabel, ylab=ylabel,pch=16,xlim=c(0,120),ylim=c(1,4)); 
+fit=lm(rmax~Light);
+abline(fit)
+text(40,3,paste("rmax=",c1,"+",c2,"Light"));
+
+plot(LogLight,rmax,xlab=xlabelLog, ylab=ylabel,pch=16); 
+fit=lm(rmax~Light);
+abline(fitLog)
+text(3.8,3,paste("rmax=",c1,"+",c2,"Log Light"));
+@
+
+\begin{figure}
+\begin{center}
+<<label=LightOneRow,fig=TRUE,echo=FALSE>>=
+<<LightOneRow>>
+@
+\end{center}
+\caption{Regression Analysis of Light and $\log$ Light on one Row.}
+\label{fig:LightOneRow}
+\end{figure}
+
+\eans
+
+\ans{Exercise 3.5}
+The following code block will generate a $2\times 2$ set of plots, each showing the line $y=5x+3$ given $x\in [3,8]$, with four different line styles and colors:
+
+<<twobytwo>>=
+x<-3:8
+y<-5*x+3
+
+par(mfrow=c(2,2))
+plot(x,y,pch=10,col="green")
+title(main="Green blobs");
+plot(x,y,pch=11,col="red")
+title(main="Red stars");
+plot(x,y,pch=12,col="black")
+title(main="Black squares");
+plot(x,y,pch=15,col="blue")
+title(main="Blue solid squares");
+@
+
+\begin{figure}
+\begin{center}
+<<label=twobytwo,fig=TRUE,echo=FALSE>>=
+<<twobytwo>>
+@
+\end{center}
+\caption{A $2\times 2$ set of plots of $y=5x+3$, with $x\in [3,8]$.}
+\label{fig:twobytwo}
+\end{figure}
+\eans
+
+\ans{Exercise 3.6}
+If we want to save it to disk, we can use \verb@png()@, \verb@jpeg()@, \verb@pdf()@, or \verb@postscript()@ to prompt R to save it to disk. This example uses \verb@png()@.
+
+<<pngplot>>=
+png('twobytwoplot.png')
+par(mfrow=c(2,2))
+plot(x,y,pch=10,col="green")
+title(main="Green blobs");
+plot(x,y,pch=11,col="red")
+title(main="Red stars");
+plot(x,y,pch=12,col="black")
+title(main="Black squares");
+plot(x,y,pch=15,col="blue")
+title(main="Blue solid squares");
+dev.off()
+@
+\eans
+
+\section{Vectors}
+
+\ans{Exercise 4.1}
+
+We want to create the vector \verb@v=(1 5 9 13)@ using \verb@seq@:
+<<>>=
+v=seq(1,13,length=4)
+v
+@
+
+Now we want to create a vector from $1$ to $5$ in increments of $0.2$, first with \verb@seq@, and then with some clever trickery of the form \verb@v=1+b*c(i:j)@:
+
+<<>>=
+v1=seq(1,5,by=.2)
+v1
+
+v2=1+.2*c(0:20)
+v2
+
+v1==v2
+@
+\eans
+
+\ans{Exercise 4.2}
+We want to create a vector of 5000 normally distributed random numbers with mean=3, standard deviation=2:
+
+<<fivethousandrnorm>>=
+v=rnorm(5000,mean=3,sd=2);
+mean(v)
+sd(v)
+@
+
+<<label=ftrnorm, include=FALSE>>=
+hist(v,breaks=20)
+@
+
+\begin{figure}
+\begin{center}
+<<label=fivethousandrnorm,fig=TRUE,echo=FALSE>>=
+<<ftrnorm>>
+@
+\end{center}
+\caption{Histogram of 5000 normally distributed numbers with $\bar{x}=3$, $\sigma=2$.}
+\label{fig:fivethousand}
+\end{figure}
+\eans
+
+\ans{Exercise 4.3}
+We are to create a finite geometric series $1+r+r^2+\ldots+r^n$ with $r=0.5$ and $n=10$, and compute its sum:
+
+<<>>=
+1+sum(.5^c(1:10))
+@
+
+Compare this to the limiting value for any geometric series:
+
+\[
+\frac{1}{1-r}
+\]
+
+<<>>=
+1/(1-.5)
+@
+
+and you can see we're a bit off. We increase accuracy by increasing the resolution:
+
+<<>>=
+1+sum(.5^c(1:50))
+1+sum(.5^c(1:5000))
+@
+
+GO BACK TO THIS ONE
+\eans
+
+\ans{Exercise 4.4}
+Given \verb@q = c(1,3,5,7,9,11)@, we want to extract the second, first, and third elements of \verb@q@ in that order:
+
+<<>>=
+q = c(1,3,5,7,9,11)
+q[c(2,1,3)]
+@
+
+\eans
+
+\ans{Exercise 4.5}
+We want to write a script that computes values of $z=\frac{(x-1)}{(x+1)}$ and $w=\frac{\sin(x^2)}{x^2}$ for $x=1,2,\ldots,12$ and plots both of these functions of x with points connected by a line:
+
+
+<<>>=
+x=c(1:12)
+z=(x-1)/(x+1)
+w=(sin(x^2)/x^2)
+@
+
+<<twoplots>>=
+plot(x,z,col="red",type="o",lty=1,pch=22,ylim=c(-.4,1))
+lines(x,w,col="blue",type="o",lty=1,pch=22)
+legend(2, 1, c("z(x)","w(x)"), cex=0.8, 
+   col=c("red","blue"), pch=22, lty=1);
+
+@
+
+\begin{figure}
+\begin{center}
+<<label=twoplots,fig=TRUE,echo=FALSE>>=
+<<twoplots>>
+@
+\end{center}
+\caption{Plots of $z(x)$ and $w(x)$.}
+\label{fig:twoplots}
+\end{figure}
+
+\eans
+
+\section{Matrices}
+
+\ans{Exercise 5.1}
+Here, we're going to create the following matrix in R:
+\[
+\begin{pmatrix}
+1&1&1&1\\
+2&2&2&2
+\end{pmatrix}
+\]
+
+<<>>=
+X=matrix(c(rep(1,4),rep(2,4)),2,4)
+X
+@
+
+\eans
+
+\ans{Exercise 5.2}
+Here, we're going to use \verb@rnorm@ and \verb@matrix@ to create a $5\times 7$ matrix of Gaussian random numbers with mean $1$ and standard deviation 2:
+
+<<>>=
+matrix(rnorm(35,mean=1,sd=2),5,7)
+@
+
+\eans
+
+\ans{Exercise 5.3}
+
+If we have $A$ and $B$ defined as follows:
+
+<<>>=
+A=cbind(1:3,4:6,7:9);A
+B=rbind(1:3,4:6);B
+@
+
+and we want to combine the two matrices together, we'll see that
+
+<<>>=
+rbind(A,B)
+cbind(A,A)
+@
+
+both work,but \verb@cbind(A,B)@ won't. This is because the number of rows in $A$ and $B$ differ. 
+
+\eans
+
+\ans{Exercise 5.4}
+With \verb@runif@ we can create a $5\times 5$ matrix of random numbers with a uniform distribution between $0$ and $1$:
+
+<<>>=
+B=matrix(runif(25),5,5);B
+B[2,]
+B[,2]
+B[2:4,2:4]
+B[1,]=seq(2,14,by=3);B
+@
+
+\eans
+
+\section{Iteration (``Looping")}
+
+\ans{Exercise 6.1}
+At $t=0$, I have $400$ parasites and my assistant has $120$. I, however, accumulate additional parasites at a rate of $10\%$ every day, whilst my assistant accumulates at the increased rate of $20\%$. We model this with following two equations, where $t$ is the number of days after returning:
+
+\begin{align*}
+n(t)&=400(1.1)^t\\
+m(t)&=120(1.2)^t,
+\end{align*}
+
+where $n$ is me, and $m$ is my assistant. 
+
+Our script file \verb@Parasite1.R@ will use a for-loop to compute the number of parasites in both bodies over 30 days, and plot both log(parasites) versus time:
+
+<<>>=
+n=rep(0,31)
+m=rep(0,31)
+t=c(0:30)
+for(i in t){
+n[i+1]=400*(1.1)^i
+m[i+1]=120*(1.2)^i
+}
+@
+
+<<disease>>=
+plot(t,log(n),col="black", type="o",lty=1,pch=20,ylab="Number of parasites", xlab="Time (in days)",ylim=c(4.5,10.2))
+lines(t,log(m),col="red",type="o",lty=1,pch=20)
+legend(2, 10, c("Me","My assistant"), cex=0.8, 
+   col=c("black","red"), pch=20, lty=1);
+@
+
+\begin{figure}
+\begin{center}
+<<label=disease,fig=TRUE,echo=FALSE>>=
+<<disease>>
+@
+\end{center}
+\caption{Plot of a nasty parasite spreading through me and my assistant over 30 days.}
+\label{fig:disease}
+\end{figure}
+
+\eans
+
+
+\ans{Exercise 6.2}
+
+We will now construct the following $5\times 5$ matrix (call it $A$) using a nested for-loop\footnote{There is definitely a better way to do this.}:
+
+\[
+\begin{pmatrix}
+0&1&2&3&4\\
+0.1&0&0&0&0\\
+0&0.2&0&0&0\\
+0&0&0.3&0&0\\
+0&0&0&0.4&0
+\end{pmatrix}
+\]
+
+
+<<>>=
+A=matrix(0,5,5);
+for (row in 1:5){
+	if (row == 1){
+	for (col in 1:5){
+	A[row,col]=col-row		
+		}
+	}
+	else{	
+
+	for (col in 1:5){
+	if (row==col+1)
+	A[row,col]=col/10
+		}
+	}
+}
+A
+@
+
+\eans
+
+\ans{Exercise 6.3}
+We will now rewrite \verb@Parasite1.R@ (see Exercise 6.1) to terminate when my assistant is sicker. Call this new script \verb@Parasite2.R@:
+
+<<>>=
+n=400
+m=120
+t=1
+while(n[t]>m[t]){
+n[t+1]=400*(1.1)^t
+m[t+1]=120*(1.2)^t
+t<-t+1
+}
+n
+m
+@
+
+We see that day 15 is the day my assistant becomes sicker.
+\eans
+
+\ans{Exercise 6.4}
+We want to use \verb@identical@ to determine whether all entries in an \verb@rnorm(5)@ are positive:
+<<>>=
+a=rnorm(5);a
+identical(a>0,rep(TRUE,5))
+@
+\eans
+
+\section{Branching}
+
+\ans{Exercise 7.1}
+There wasn't really an exercise here more than there was a call to check out the following script \verb@Branch.R@:
+
+<<>>=
+# solve geometric growth model and plot the results
+
+# set the initial population size
+initsize=10
+
+# create matrix to hold results sizes and store initial size 
+popsize=initsize; 
+
+# create variable to hold the current population size
+popnow=initsize;
+
+# calculate population sizes and append to popsize
+while(popnow<1000) {
+    if(popnow<250){
+        popnow=popnow*2;
+    }else{
+        popnow=popnow*1.5;
+    }
+    popsize=c(popsize,popnow);
+}
+
+tvals=1:length(popsize); 
+plot(tvals, log(popsize),type="o",col="red",
+xlab="Generation",ylab="Population size",pch=16,cex=1.25);
+title(main="Geometric growth model"); 
+@
+\eans
+
+\ans{Exercise 7.2}
+We're now going to modify \verb@Parasite1.R@ so that there is random variation in parasite reproduction:
+
+<<>>=
+n=400
+m=120
+t=c(1:29)
+
+for(i in t){
+if (runif(1) < .5){
+n[i+1]=n[i]*(.9)
+m[i+1]=m[i]*(.8)
+}
+else{
+n[i+1]=n[i]*(1.1)
+m[i+1]=m[i]*(1.2)
+}
+}
+@
+
+<<diseasevar>>=
+plot(c(t,30),n,col="black", type="o",lty=1,pch=20,ylab="Number of parasites", xlab="Time (in days)",ylim=c(min(min(n),min(m)),max(max(n),max(m))))
+lines(c(t,30),m,col="red",type="o",lty=1,pch=20)
+legend(2, max(max(n),max(m)), c("Me","My assistant"), cex=0.8, 
+   col=c("black","red"), pch=20, lty=1);
+@
+
+\begin{figure}
+\begin{center}
+<<label=diseasevar,fig=TRUE,echo=FALSE>>=
+<<diseasevar>>
+@
+\end{center}
+\caption{Plot of a nasty parasite spreading through me and my assistant over 30 days, with the variation coin-flip.}
+\label{fig:diseasevar}
+\end{figure}
+\eans
+
+\section{Numerical Matrix Algebra}
+\ans{Exercise 8.1}
+We can find the eigenvalues of a matrix as follows:
+<<>>=
+A=matrix(1:9,3,3);vA=eigen(A);vA;
+j=1; A %*% vA$vectors[,j] - vA$values[j]*vA$vectors[,j];
+j=2; A %*% vA$vectors[,j] - vA$values[j]*vA$vectors[,j];
+j=3; A %*% vA$vectors[,j] - vA$values[j]*vA$vectors[,j];
+@
+
+What we are seeing here is the following identity:
+
+\[
+Ax - \lambda I x = 0;
+\]
+
+however, there is some numerical roundoff error present. 
+\eans
+
+\ans{Exercise 8.2}
+The \verb@names@ command will return the names of an object, like so:
+
+<<>>=
+names(vA)
+@
+
+If we have an object with no names, or if the object can't have any names, it'll return a \verb@NULL@:
+
+<<>>=
+names(A)
+@
+
+\eans
+
+\ans{Exercise 8.3}
+We can find the left eigenvalues of $A$ as follows:
+
+<<>>=
+vLA=eigen(t(A))$vectors
+j=1;vLA[,j] %*% A-vA$values[j]*vLA[,j];
+j=2;vLA[,j] %*% A-vA$values[j]*vLA[,j];
+j=3;vLA[,j] %*% A-vA$values[j]*vLA[,j];
+@
+
+\eans
+
+\ans{Exercise 8.4}
+We want to find all the eigenvalues for the following matrices:
+
+\[
+A= 
+\begin{pmatrix}
+	1&-5&0\\6&4&0\\0&0&2
+\end{pmatrix}
+\qquad
+B=
+\begin{pmatrix}
+	0&1&5\\0.6&0&0\\0&0.4&0.9
+\end{pmatrix}
+\]
+
+
+<<>>=
+A=matrix(c(1,6,0,-5,4,0,0,0,2),3,3);B=matrix(c(0,.6,0,1,0,.4,5,0,.9),3,3)
+vA<- eigen(A);vB<-eigen(B);
+vA$values;vB$values
+vLA<- eigen(t(A))$vectors; vLB<- eigen(t(B))
+@
+\eans
+
+\section{Creating new functions}
+
+\ans{Exercise 9.1}
+We will create a function that produces sums of squares and call it \verb@myfunction@:
+
+<<>>=
+mysquare=function(v,w){
+	u=v^2+w^2;
+	return(u)
+}
+
+q=mysquare(1:4,1:4);q
+@
+
+\eans
+
+\ans{Exercise 9.2}
+In this exercise, we will create a function \verb@domeig@ that will take a single matrix and return a list with components \verb@value@ and \verb@vector@. \verb@value@ will have the eigenvalue with the largest absolute value, and \verb@vector@ will have scaled eigenvector so the the absolute value of its entries sum to 1:
+
+<<>>=
+domeig=function(A){
+vA <- eigen(A)
+final <- NULL 	
+final$value <- max(vA$value)
+final$vector <- vA$vector[,1]
+return(final) 
+}
+A <-matrix(1:9,3,3)
+domeig(A)
+@
+
+\eans
+
+\section{A simulation project} % (fold)
+\label{sec:a_simulation_project}
+
+In this section, 
+
+
+% section a_simulation_project (end)
+\end{document}
