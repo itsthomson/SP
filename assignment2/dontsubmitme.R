@@ -118,9 +118,15 @@ simulateall <- function(numberoftimes){
 	Cwins <- length(which(Ctrials[,2] > 0))/numberoftimes
 	Dwins <- length(which(Dspins[,2] > 0))/numberoftimes
 	
-	totalspins<- c(mean(Atrials[,1]),mean(Btrials[,1]),mean(Ctrials[,1]),mean(Dtrials[,1]))
+	totalspins <- c(mean(Atrials[,1]),mean(Btrials[,1]),mean(Ctrials[,1]),mean(Dtrials[,1]))
+	spinssd <- c(sd(Atrials[,1]),sd(Btrials[,1]),sd(Ctrials[,1]),sd(Dtrials[,1]))
+	
 	totalwins <- c(Awins,Bwins,Cwins,Dwins)
+	winssd <- 
+	
 	expectedwin <- c(mean(Atrials[,2]),mean(Btrials[,2]),mean(Ctrials[,2]),mean(Dtrials[,2]))
+	winningssd <- c(sd(Atrials[,2]),sd(Btrials[,2]),sd(Ctrials[,2]),sd(Dtrials[,2]))
+	
 	
 	results <- cbind(expectedwin,totalwins, totalspins)
 	rownames(results) <- c("Bet on red","Bet one number","Martingale","Labouchere")
