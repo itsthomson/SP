@@ -113,24 +113,24 @@ simulateall <- function(numberoftimes){
 	Ctrials <- t(replicate(numberoftimes,martingale()))
 	Dtrials <- t(replicate(numberoftimes,labouchere()))
 	
-	Awins <- length(which(Atrials[,2] > 0))/numberoftimes
-	Bwins <- length(which(Btrials[,2] > 0))/numberoftimes
-	Cwins <- length(which(Ctrials[,2] > 0))/numberoftimes
-	Dwins <- length(which(Dspins[,2] > 0))/numberoftimes
-	
+	Awins <- which(Atrials[,2] > 0)
+	Bwins <- which(Btrials[,2] > 0)
+	Cwins <- which(Ctrials[,2] > 0)
+	Dwins <- which(Dtrials[,2] > 0)
+		
 	totalspins <- c(mean(Atrials[,1]),mean(Btrials[,1]),mean(Ctrials[,1]),mean(Dtrials[,1]))
 	spinssd <- c(sd(Atrials[,1]),sd(Btrials[,1]),sd(Ctrials[,1]),sd(Dtrials[,1]))
 	
-	totalwins <- c(Awins,Bwins,Cwins,Dwins)
-	winssd <- 
-	
+	totalwins <- c(length(Awins),length(Bwins),length(Cwins),length(Dwins))/numberoftimes
+	winssd <- sqrt(totalwins * (1-totalwins))
+		
 	expectedwin <- c(mean(Atrials[,2]),mean(Btrials[,2]),mean(Ctrials[,2]),mean(Dtrials[,2]))
 	winningssd <- c(sd(Atrials[,2]),sd(Btrials[,2]),sd(Ctrials[,2]),sd(Dtrials[,2]))
 	
 	
-	results <- cbind(expectedwin,totalwins, totalspins)
+	results <- cbind(expectedwin,winningssd,totalwins,winssd, totalspins,spinssd)
 	rownames(results) <- c("Bet on red","Bet one number","Martingale","Labouchere")
-	colnames(results) <- c("Expected winnings", "Win percentage","Expected bets")
+	colnames(results) <- c("Expected winnings", "(SD)","Win percentage","(SD)","Expected bets","(SD)")
 	return(results)
 	}
 	
@@ -149,4 +149,4 @@ set.seed(seed)
 # Martingale              -1.80014        0.91100      19.50408
 # Labouchere              -3.80113        0.00090       8.69190
 
-simulateall(100000)
+simulateall(10000)
