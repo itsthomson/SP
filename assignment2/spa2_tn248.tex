@@ -6,16 +6,15 @@
 
 % %%
 % Created 31 Oct 2010
-% Last updated 7 Nov 2010
-% Submitted (Not yet)
+% Last updated 9 Nov 2010
+% Submitted 9 Nov 2010
 % tn248@cam.ac.uk
 % %%
 
-% NOT FIT FOR SUBMISSION - DELETE ME WHEN DONE
+% Because I forget:
+% Sweave("spa2_tn248", driver = cacheSweaveDriver)
 
-% Sweave("spa2_tn248.RnW", driver = cacheSweaveDriver)
-
-\documentclass[10pt, oneside, reqno]{article}
+\documentclass[9pt, oneside, reqno]{article}
 \usepackage{amssymb, amsthm, amsmath, amsfonts}
 \usepackage{fullpage}
 \usepackage[tableposition=top]{caption}
@@ -242,13 +241,14 @@ We'll now create a function, {\tt simulateall}, that will run these four games a
 + 	
 + 	results <- cbind(expectedwin,winningssd,totalwins,winssd, totalspins,spinssd)
 + 	rownames(results) <- c("Bet on red","Bet one number","Martingale","Labouchere")
-+ 	colnames(results) <- c("Expected winnings", "(SD)","Win percentage","(SD)","Expected bets","(SD)")
++ 	colnames(results) <- c("Expected winnings", "(SD)","Win percentage","(SD)",
++ 	"Expected bets","(SD)")
 + 	return(results)
 + 	}
 \end{Sinput}
 \end{Schunk}
 
-Let's run this for $100,000$ repetitions of each game. We'll start with setting the seed to my birthday in American date form. We'll also call {\tt cacheSweave} because the next couple of steps are computationally expensive:
+For 22.2.1, let's run this for $100,000$ repetitions of each game. We'll start with setting the seed to my birthday in American date form. We'll also call {\tt cacheSweave}\footnote{I've attached the cache folders with this .Rnw and .pdf, as my {\tt simulateall} function is a bit computationally expensive. I used {\tt system.time} to time the function, and for $100$k it took about 200 seconds.} because the next couple of steps are computationally expensive. Table~\ref{table:onetime} has the results of our single simulation:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -277,7 +277,41 @@ Labouchere              -3.82102 77.4593735        0.94613 0.2257610       8.723
 \end{Soutput}
 \end{Schunk}
 
-We will now repeat this $100$k simulation five times:
+% Parts of the following multicolumn table code is courtesy of S. Bagaria.
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{rcc|cc|cc}
+& \multicolumn{2}{c|}{{\bf Expected Winnings}} & \multicolumn{2}{c|}{{\bf Proportion Wins}} & \multicolumn{2}{c}{{\bf Expected Bets}} \\
+Game & Mean & SD & Mean & SD & Mean & SD \\
+% latex table generated in R 2.11.1 by xtable 1.5-6 package
+% Tue Nov  9 17:57:13 2010
+  \hline
+Bet on red & -0.03 & 1.00 & 0.48 & 0.50 & 1.00 & 0.00 \\ 
+  Bet one number & -0.02 & 5.85 & 0.03 & 0.16 & 1.00 & 0.00 \\ 
+  Martingale & -1.94 & 37.96 & 0.91 & 0.29 & 19.52 & 4.52 \\ 
+  Labouchere & -3.82 & 77.46 & 0.95 & 0.23 & 8.72 & 7.52 \\ 
+   \hline\end{tabular}
+\end{center}
+\caption{One $100$k simulation of four different betting systems in roulette.}
+\label{table:onetime}
+\end{table}
+
+As a check (and for 22.2.2), let's calculate the expected value and proportion of games won for games A and B (i.e., betting on one colour and betting on one number). For game A, our expected value is 
+\[\frac{18}{37} \times 1 + \frac{19}{37} \times - 1 = -0.02703,\] 
+with a win ratio of $\frac{18}{37}=0.4865$.  Compare with our values in {\tt results}, $-0.03154$ and $0.4842$. Our percentage error is 
+\[\left | \frac{-0.02703 - (-0.03154)}{0.2703}\right | \times 100 = 1.669\%\] for the expected value and 
+\[\left| \frac{0.4865-0.4842}{0.4865}\right| \times 100 = 0.472\%\] for our win ratio. 
+
+For game B, our expected value is 
+\[\frac{1}{37} \times 35 + \frac{36}{37} \times -1 = -0.02703,\] 
+with a win ratio of $\frac{1}{37}=0.02703$. Compare this with our values of $-0.02440$ and $0.02710$, respectively. This gives us an error percentage of 
+\[\left | \frac{-0.02703 - (-0.02440)}{0.2703}\right | \times 100 = 0.973\%\] 
+for the expected value and 
+\[\left| \frac{0.02703-0.02710}{0.02703}\right| \times 100 = 0.259\%\] for our win ratio. Not bad!
+
+We see that for game A (betting one colour), the maximum amount we can win or lose is \$1, as our game only lasts for one bet. This is exactly the same for game B (betting one number). For the martingale, the maximum amount we can win is \$10 (our goal), but our maximum loss is if we were to lose seven times in a row, or $\sum^7_{i=0} 2^i = \$127$. Due to nature of continuing to spin until a list has been exhausted, for Labouchere we get that the maximum amount we can win is \$58, and the maximum loss in a single game is \$899.
+
+We probably want to find out the variation between different runs, so now we will repeat this $100$k simulation five times (22.2.3):
 
 \begin{Schunk}
 \begin{Sinput}
@@ -289,58 +323,49 @@ We will now repeat this $100$k simulation five times:
 \end{Sinput}
 \end{Schunk}
 
+%<<outputfivetimes,echo=FALSE, results=tex>>=
+%xtable(run1)
+%xtable(run2)
+%xtable(run3)
+%xtable(run4)
+%xtable(run5)
+%@
+
+Let's now take the min and max values of each column across the five simulations. These values are assembled in Table~\ref{table:fivesim}:
+
 \begin{Schunk}
 \begin{Sinput}
-> run1
+> expvals=matrix(rep(0,8),4,2)
+> propwins=matrix(rep(0,8),4,2)
+> expbets=matrix(rep(0,8),4,2)
+> for (i in 1:4){
++ expvals[i,] <- summary(c(run1[i,1],run2[i,1],run3[i,1],run4[i,1],run5[i,1]))[c(1,6)]
++ propwins[i,] <- summary(c(run1[i,3],run2[i,3],run3[i,3],run4[i,3],run5[i,3]))[c(1,6)]
++ expbets[i,] <- summary(c(run1[i,5],run2[i,5],run3[i,5],run4[i,5],run5[i,5]))[c(1,6)]}
+> tablevar<- cbind(expvals,propwins,expbets)
+> rownames(tablevar) <- c("Bet on red","Bet one number","Martingale","Labouchere")
 \end{Sinput}
-\begin{Soutput}
-               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
-Bet on red              -0.03154  0.9995075        0.48423 0.4997512       1.00000 0.000000
-Bet one number          -0.02440  5.8455236        0.02710 0.1623748       1.00000 0.000000
-Martingale              -1.93885 37.9591254        0.90994 0.2862677      19.51669 4.520879
-Labouchere              -3.82102 77.4593735        0.94613 0.2257610       8.72328 7.524335
-\end{Soutput}
-\begin{Sinput}
-> run2
-\end{Sinput}
-\begin{Soutput}
-               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
-Bet on red              -0.03134  0.9995138        0.48433 0.4997544       1.00000 0.000000
-Bet one number          -0.01936  5.8601816        0.02724 0.1627820       1.00000 0.000000
-Martingale              -1.80014 37.7630372        0.91100 0.2847437      19.50408 4.533349
-Labouchere              -3.80113 77.9289677        0.94731 0.2234139       8.69190 7.472066
-\end{Soutput}
-\begin{Sinput}
-> run3
-\end{Sinput}
-\begin{Soutput}
-               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
-Bet on red              -0.02640  0.9996565        0.48680 0.4998257       1.00000 0.000000
-Bet one number          -0.04204  5.7938941        0.02661 0.1609407       1.00000 0.000000
-Martingale              -2.06532 38.1452564        0.90901 0.2875949      19.52814 4.529059
-Labouchere              -3.93225 77.9966048        0.94632 0.2253851       8.70712 7.494817
-\end{Soutput}
-\begin{Sinput}
-> run4
-\end{Sinput}
-\begin{Soutput}
-               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
-Bet on red              -0.02804  0.9996118        0.48598 0.4998034       1.00000 0.000000
-Bet one number          -0.01576  5.8706266        0.02734 0.1630721       1.00000 0.000000
-Martingale              -1.78202 37.7327744        0.91112 0.2845705      19.53855 4.518429
-Labouchere              -3.81569 77.9818967        0.94666 0.2247106       8.68369 7.492281
-\end{Soutput}
-\begin{Sinput}
-> run5
-\end{Sinput}
-\begin{Soutput}
-               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
-Bet on red              -0.02582  0.9996716        0.48709 0.4998333       1.00000 0.000000
-Bet one number          -0.03664  5.8097534        0.02676 0.1613812       1.00000 0.000000
-Martingale              -1.83474 37.8036522        0.91070 0.2851763      19.51745 4.513114
-Labouchere              -4.10654 78.3743862        0.94599 0.2260374       8.70270 7.505476
-\end{Soutput}
 \end{Schunk}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{rcc|cc|cc}
+& \multicolumn{2}{c|}{{\bf Expected Winnings}} & \multicolumn{2}{c|}{{\bf Proportion Wins}} & \multicolumn{2}{c}{{\bf Expected Bets}} \\
+Game & Min & Max & Min & Max & Min & Max \\
+% latex table generated in R 2.11.1 by xtable 1.5-6 package
+% Tue Nov  9 17:57:13 2010
+  \hline
+Bet on red & -0.03 & -0.03 & 0.48 & 0.49 & 1.00 & 1.00 \\ 
+  Bet one number & -0.04 & -0.02 & 0.03 & 0.03 & 1.00 & 1.00 \\ 
+  Martingale & -2.06 & -1.78 & 0.91 & 0.91 & 19.50 & 19.54 \\ 
+  Labouchere & -4.11 & -3.80 & 0.95 & 0.95 & 8.68 & 8.72 \\ 
+   \hline\end{tabular}
+\end{center}
+\caption{Variation of five different $100$k simulations of the four betting systems.}
+\label{table:fivesim}
+\end{table}
+
+Here, Table~\ref{table:onetime} seems to suggest that the Labouchere system has the most variable expected winnings. We also see that the Labouchere system also has the most variable expected playing time. 
 
 \eans
 \end{document}

@@ -6,16 +6,15 @@
 
 % %%
 % Created 31 Oct 2010
-% Last updated 7 Nov 2010
-% Submitted (Not yet)
+% Last updated 9 Nov 2010
+% Submitted 9 Nov 2010
 % tn248@cam.ac.uk
 % %%
 
-% NOT FIT FOR SUBMISSION - DELETE ME WHEN DONE
+% Because I forget:
+% Sweave("spa2_tn248", driver = cacheSweaveDriver)
 
-% Sweave("spa2_tn248.RnW", driver = cacheSweaveDriver)
-
-\documentclass[10pt, oneside, reqno]{article}
+\documentclass[9pt, oneside, reqno]{article}
 \usepackage{amssymb, amsthm, amsmath, amsfonts}
 \usepackage{fullpage}
 \usepackage[tableposition=top]{caption}
@@ -230,12 +229,13 @@ simulateall <- function(numberoftimes){
 	
 	results <- cbind(expectedwin,winningssd,totalwins,winssd, totalspins,spinssd)
 	rownames(results) <- c("Bet on red","Bet one number","Martingale","Labouchere")
-	colnames(results) <- c("Expected winnings", "(SD)","Win percentage","(SD)","Expected bets","(SD)")
+	colnames(results) <- c("Expected winnings", "(SD)","Win percentage","(SD)",
+	"Expected bets","(SD)")
 	return(results)
 	}
 @ 
 
-Let's run this for $100,000$ repetitions of each game. We'll start with setting the seed to my birthday in American date form. We'll also call {\tt cacheSweave} because the next couple of steps are computationally expensive:
+For 22.2.1, let's run this for $100,000$ repetitions of each game. We'll start with setting the seed to my birthday in American date form. We'll also call {\tt cacheSweave}\footnote{I've attached the cache folders with this .Rnw and .pdf, as my {\tt simulateall} function is a bit computationally expensive. I used {\tt system.time} to time the function, and for $100$k it took about 200 seconds.} because the next couple of steps are computationally expensive. Table~\ref{table:onetime} has the results of our single simulation:
 
 <<settingseed>>=
 seed <- 110685
@@ -247,11 +247,42 @@ library(cacheSweave)
 results <- simulateall(100000)
 @
 
-<<outputonetime>>=
+<<>>=
 results
 @
 
-We will now repeat this $100$k simulation five times:
+% Parts of the following multicolumn table code is courtesy of S. Bagaria.
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{rcc|cc|cc}
+& \multicolumn{2}{c|}{{\bf Expected Winnings}} & \multicolumn{2}{c|}{{\bf Proportion Wins}} & \multicolumn{2}{c}{{\bf Expected Bets}} \\
+Game & Mean & SD & Mean & SD & Mean & SD \\
+<<tableonetime, results=tex, echo=FALSE>>=
+library(xtable)
+print(xtable(results), include.colnames=F, only.contents=T)
+@
+\end{tabular}
+\end{center}
+\caption{One $100$k simulation of four different betting systems in roulette.}
+\label{table:onetime}
+\end{table}
+
+As a check (and for 22.2.2), let's calculate the expected value and proportion of games won for games A and B (i.e., betting on one colour and betting on one number). For game A, our expected value is 
+\[\frac{18}{37} \times 1 + \frac{19}{37} \times - 1 = -0.02703,\] 
+with a win ratio of $\frac{18}{37}=0.4865$.  Compare with our values in {\tt results}, $-0.03154$ and $0.4842$. Our percentage error is 
+\[\left | \frac{-0.02703 - (-0.03154)}{0.2703}\right | \times 100 = 1.669\%\] for the expected value and 
+\[\left| \frac{0.4865-0.4842}{0.4865}\right| \times 100 = 0.472\%\] for our win ratio. 
+
+For game B, our expected value is 
+\[\frac{1}{37} \times 35 + \frac{36}{37} \times -1 = -0.02703,\] 
+with a win ratio of $\frac{1}{37}=0.02703$. Compare this with our values of $-0.02440$ and $0.02710$, respectively. This gives us an error percentage of 
+\[\left | \frac{-0.02703 - (-0.02440)}{0.2703}\right | \times 100 = 0.973\%\] 
+for the expected value and 
+\[\left| \frac{0.02703-0.02710}{0.02703}\right| \times 100 = 0.259\%\] for our win ratio. Not bad!
+
+We see that for game A (betting one colour), the maximum amount we can win or lose is \$1, as our game only lasts for one bet. This is exactly the same for game B (betting one number). For the martingale, the maximum amount we can win is \$10 (our goal), but our maximum loss is if we were to lose seven times in a row, or $\sum^7_{i=0} 2^i = \$127$. Due to nature of continuing to spin until a list has been exhausted, for Labouchere we get that the maximum amount we can win is \$58, and the maximum loss in a single game is \$899.
+
+We probably want to find out the variation between different runs, so now we will repeat this $100$k simulation five times (22.2.3):
 
 <<simulating100kfivetimes, cache=TRUE>>=
 run1 <- simulateall(100000)
@@ -261,13 +292,44 @@ run4 <- simulateall(100000)
 run5 <- simulateall(100000)
 @
 
-<<outputfivetimes>>=
-run1
-run2
-run3
-run4
-run5
+%<<outputfivetimes,echo=FALSE, results=tex>>=
+%xtable(run1)
+%xtable(run2)
+%xtable(run3)
+%xtable(run4)
+%xtable(run5)
+%@
+
+Let's now take the min and max values of each column across the five simulations. These values are assembled in Table~\ref{table:fivesim}:
+
+<<minmax>>=
+expvals=matrix(rep(0,8),4,2)
+propwins=matrix(rep(0,8),4,2)
+expbets=matrix(rep(0,8),4,2)
+for (i in 1:4){
+expvals[i,] <- summary(c(run1[i,1],run2[i,1],run3[i,1],run4[i,1],run5[i,1]))[c(1,6)]
+propwins[i,] <- summary(c(run1[i,3],run2[i,3],run3[i,3],run4[i,3],run5[i,3]))[c(1,6)]
+expbets[i,] <- summary(c(run1[i,5],run2[i,5],run3[i,5],run4[i,5],run5[i,5]))[c(1,6)]}
+tablevar<- cbind(expvals,propwins,expbets)
+rownames(tablevar) <- c("Bet on red","Bet one number","Martingale","Labouchere")
 @
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{rcc|cc|cc}
+& \multicolumn{2}{c|}{{\bf Expected Winnings}} & \multicolumn{2}{c|}{{\bf Proportion Wins}} & \multicolumn{2}{c}{{\bf Expected Bets}} \\
+Game & Min & Max & Min & Max & Min & Max \\
+<<tablevar, results=tex, echo=FALSE>>=
+library(xtable)
+print(xtable(tablevar), include.colnames=F, only.contents=T)
+@
+\end{tabular}
+\end{center}
+\caption{Variation of five different $100$k simulations of the four betting systems.}
+\label{table:fivesim}
+\end{table}
+
+Here, Table~\ref{table:onetime} seems to suggest that the Labouchere system has the most variable expected winnings. We also see that the Labouchere system also has the most variable expected playing time. 
 
 \eans
 \end{document}
