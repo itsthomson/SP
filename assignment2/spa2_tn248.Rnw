@@ -13,6 +13,8 @@
 
 % NOT FIT FOR SUBMISSION - DELETE ME WHEN DONE
 
+% Sweave("spa2_tn248.RnW", driver = cacheSweaveDriver)
+
 \documentclass[10pt, oneside, reqno]{article}
 \usepackage{amssymb, amsthm, amsmath, amsfonts}
 \usepackage{fullpage}
@@ -242,8 +244,30 @@ library(cacheSweave)
 @ 
 
 <<simulating100k, cache=TRUE>>=
-
-simulateall(100000)
+results <- simulateall(100000)
 @
+
+<<outputonetime>>=
+results
+@
+
+We will now repeat this $100$k simulation five times:
+
+<<simulating100kfivetimes, cache=TRUE>>=
+run1 <- simulateall(100000)
+run2 <- simulateall(100000)
+run3 <- simulateall(100000)
+run4 <- simulateall(100000)
+run5 <- simulateall(100000)
+@
+
+<<outputfivetimes>>=
+run1
+run2
+run3
+run4
+run5
+@
+
 \eans
 \end{document}
