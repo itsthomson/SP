@@ -13,6 +13,8 @@
 
 % NOT FIT FOR SUBMISSION - DELETE ME WHEN DONE
 
+% Sweave("spa2_tn248.RnW", driver = cacheSweaveDriver)
+
 \documentclass[10pt, oneside, reqno]{article}
 \usepackage{amssymb, amsthm, amsmath, amsfonts}
 \usepackage{fullpage}
@@ -258,8 +260,87 @@ Let's run this for $100,000$ repetitions of each game. We'll start with setting 
 
 \begin{Schunk}
 \begin{Sinput}
-> simulateall(100000)
+> results <- simulateall(100000)
 \end{Sinput}
 \end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> results
+\end{Sinput}
+\begin{Soutput}
+               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
+Bet on red              -0.03154  0.9995075        0.48423 0.4997512       1.00000 0.000000
+Bet one number          -0.02440  5.8455236        0.02710 0.1623748       1.00000 0.000000
+Martingale              -1.93885 37.9591254        0.90994 0.2862677      19.51669 4.520879
+Labouchere              -3.82102 77.4593735        0.94613 0.2257610       8.72328 7.524335
+\end{Soutput}
+\end{Schunk}
+
+We will now repeat this $100$k simulation five times:
+
+\begin{Schunk}
+\begin{Sinput}
+> run1 <- simulateall(100000)
+> run2 <- simulateall(100000)
+> run3 <- simulateall(100000)
+> run4 <- simulateall(100000)
+> run5 <- simulateall(100000)
+\end{Sinput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+> run1
+\end{Sinput}
+\begin{Soutput}
+               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
+Bet on red              -0.03154  0.9995075        0.48423 0.4997512       1.00000 0.000000
+Bet one number          -0.02440  5.8455236        0.02710 0.1623748       1.00000 0.000000
+Martingale              -1.93885 37.9591254        0.90994 0.2862677      19.51669 4.520879
+Labouchere              -3.82102 77.4593735        0.94613 0.2257610       8.72328 7.524335
+\end{Soutput}
+\begin{Sinput}
+> run2
+\end{Sinput}
+\begin{Soutput}
+               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
+Bet on red              -0.03134  0.9995138        0.48433 0.4997544       1.00000 0.000000
+Bet one number          -0.01936  5.8601816        0.02724 0.1627820       1.00000 0.000000
+Martingale              -1.80014 37.7630372        0.91100 0.2847437      19.50408 4.533349
+Labouchere              -3.80113 77.9289677        0.94731 0.2234139       8.69190 7.472066
+\end{Soutput}
+\begin{Sinput}
+> run3
+\end{Sinput}
+\begin{Soutput}
+               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
+Bet on red              -0.02640  0.9996565        0.48680 0.4998257       1.00000 0.000000
+Bet one number          -0.04204  5.7938941        0.02661 0.1609407       1.00000 0.000000
+Martingale              -2.06532 38.1452564        0.90901 0.2875949      19.52814 4.529059
+Labouchere              -3.93225 77.9966048        0.94632 0.2253851       8.70712 7.494817
+\end{Soutput}
+\begin{Sinput}
+> run4
+\end{Sinput}
+\begin{Soutput}
+               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
+Bet on red              -0.02804  0.9996118        0.48598 0.4998034       1.00000 0.000000
+Bet one number          -0.01576  5.8706266        0.02734 0.1630721       1.00000 0.000000
+Martingale              -1.78202 37.7327744        0.91112 0.2845705      19.53855 4.518429
+Labouchere              -3.81569 77.9818967        0.94666 0.2247106       8.68369 7.492281
+\end{Soutput}
+\begin{Sinput}
+> run5
+\end{Sinput}
+\begin{Soutput}
+               Expected winnings       (SD) Win percentage      (SD) Expected bets     (SD)
+Bet on red              -0.02582  0.9996716        0.48709 0.4998333       1.00000 0.000000
+Bet one number          -0.03664  5.8097534        0.02676 0.1613812       1.00000 0.000000
+Martingale              -1.83474 37.8036522        0.91070 0.2851763      19.51745 4.513114
+Labouchere              -4.10654 78.3743862        0.94599 0.2260374       8.70270 7.505476
+\end{Soutput}
+\end{Schunk}
+
 \eans
 \end{document}
